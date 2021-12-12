@@ -1,6 +1,7 @@
 package com.carerevolutions.myapplication
 
 open class SingletonHolder<out T, in A>(creator: (A) -> T) {
+    //I don't think this file is necessary it makes more sense to use an object
     private var creator: ((A) -> T)? = creator
     @Volatile private var instance: T? = null
 

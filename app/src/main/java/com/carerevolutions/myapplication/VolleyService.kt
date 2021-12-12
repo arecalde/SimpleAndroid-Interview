@@ -10,7 +10,9 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 class VolleyService {
-
+    //I would not use volley, I would use retrofit because it allows for features such as automatic
+    //parsing that volley does not, it also supports a wider variety of requests
+    //
     companion object {
 
         const val basePath: String = "https://api.carerev.com/api/v1/"
