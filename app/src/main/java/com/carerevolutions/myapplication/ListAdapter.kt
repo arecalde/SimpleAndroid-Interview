@@ -8,39 +8,39 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.LifecycleOwner
+import androidx.recyclerview.widget.RecyclerView
+import com.carerevolutions.myapplication.databinding.ListRowBinding
 
-class ListAdapter(var items: List<CountrySubdivision>, val context: Context): BaseAdapter() {
+class MyViewHolder(private val binding: ListRowBinding, private val lifecycleOwner: LifecycleOwner) : RecyclerView.ViewHolder(binding.getRoot()) {
 
-    private val inflater = LayoutInflater.from(context)
+    fun bind(item: CountrySubdivision) {
+        binding.lifecycleOwner = lifecycleOwner
+        binding.item = item
+        binding.executePendingBindings()
+    }
+}
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        val item = items[position]
-        val view: View
-        val holder: ItemHolder
-        if (convertView == null) {
-            view = inflater.inflate(R.layout.list_row, parent, false)
-            holder = ItemHolder()
-            holder.label = view.findViewById(R.id.label)
-            view.tag = holder
-        } else {
-            view = convertView
-            holder = view.tag as ItemHolder
-        }
-        holder.label.text = item.toString()
-        return view
+class ListAdapter(private val items: List<CountrySubdivision>, private val lifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<MyViewHolder>() {
+
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): MyViewHolder {
+        val itemBinding = DataBindingUtil.inflate<ListRowBinding>(
+            LayoutInflater.from(parent.context),
+            R.layout.list_row,
+            parent,
+            false
+        )
+        return MyViewHolder(itemBinding, lifecycleOwner)
     }
 
-    override fun getCount(): Int = items.size
-
-    override fun getItem(position: Int): Any {
-        return items[position]
+    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+        val item: CountrySubdivision = items[position]
+        holder.bind(item)
     }
 
-    override fun getItemId(position: Int): Long {
-        return position.toLong()
-    }
-
-    private class ItemHolder {
-        lateinit var label: TextView
-    }
+    override fun getItemCount() = items.size
 }
